@@ -80,16 +80,6 @@ const generateDVRs = (cameras) => {
   return dvrs;
 };
 
-const AI_FEATURES = [
-  { name: "Face Detection", icon: "👤", status: "active" },
-  { name: "Object Detection", icon: "📦", status: "active" },
-  { name: "People / Head Counting", icon: "👥", status: "active" },
-  { name: "Behavioral Analysis", icon: "🧠", status: "active" },
-  { name: "Audio Detection / Recognition", icon: "🔊", status: "active" },
-  { name: "Intrusion Detection (Line Draw)", icon: "🚨", status: "active" },
-  { name: "Unusual Event Identification", icon: "⚡", status: "warning" },
-  { name: "Illegal Activity Detection", icon: "🔍", status: "warning" },
-];
 
 // ── Animated Counter ──────────────────────────────────────────────────────────
 function useCounter(target, duration = 1200) {
@@ -315,7 +305,7 @@ export default function BRACDashboard() {
 
   const uptime = ((onlineCams / totalCams) * 100).toFixed(1);
 
-  const tabs = ["overview", "cameras", "dvrs", "ai-features", "alerts"];
+  const tabs = ["overview", "cameras", "dvrs"];
 
   return (
     <div style={{
@@ -735,133 +725,7 @@ export default function BRACDashboard() {
           </div>
         )}
 
-        {/* ═══════════════════════════ AI FEATURES TAB ═══════════════════════ */}
-        {activeTab === "ai-features" && (
-          <div className="card">
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 16, fontWeight: 700, color: "#e8f4f8", marginBottom: 4 }}>
-                AI Feature Status — 8 Active Modules
-              </div>
-              <div style={{ fontSize: 12, color: "#556677" }}>Deployed on GPU Worker Nodes 2, 3, 4 · RTX 5000 Ada · YOLO + BoT-SORT</div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
-              {AI_FEATURES.map((f, i) => {
-                const statusColor = f.status === "active" ? "#22c55e" : f.status === "warning" ? "#f59e0b" : "#6b7280";
-                const camCount = Math.floor(Math.random() * 20) + 10;
-                const fps = f.status === "active" ? Math.floor(Math.random() * 8) + 22 : 0;
-                return (
-                  <div key={f.name} style={{
-                    background: "#0a1628",
-                    border: `1px solid ${statusColor}33`,
-                    borderRadius: 14, padding: 18,
-                    animation: `slide-in .4s ease ${i * 0.05}s both`,
-                  }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <div style={{
-                          width: 40, height: 40, borderRadius: 10,
-                          background: `${statusColor}18`, display: "flex",
-                          alignItems: "center", justifyContent: "center", fontSize: 20,
-                        }}>{f.icon}</div>
-                        <div>
-                          <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontWeight: 700, fontSize: 13, color: "#e8f4f8" }}>{f.name}</div>
-                          <div style={{ fontSize: 10, color: "#556677", fontFamily: "'IBM Plex Mono', monospace", marginTop: 2 }}>Module {String(i + 1).padStart(2, "0")}</div>
-                        </div>
-                      </div>
-                      <span style={{
-                        fontSize: 10, fontFamily: "'IBM Plex Mono', monospace",
-                        color: statusColor, background: `${statusColor}18`,
-                        padding: "3px 8px", borderRadius: 20, border: `1px solid ${statusColor}44`,
-                        textTransform: "uppercase",
-                      }}>{f.status}</span>
-                    </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                      {[
-                        { label: "Cameras", value: f.status === "inactive" ? "—" : `${camCount}/${totalCams}` },
-                        { label: "Avg FPS", value: f.status === "inactive" ? "—" : fps },
-                        { label: "Node", value: `Worker ${(i % 3) + 2}` },
-                        { label: "GPU Mem", value: f.status === "inactive" ? "—" : `${Math.floor(Math.random() * 4) + 2}GB` },
-                      ].map(stat => (
-                        <div key={stat.label} style={{ background: "#060e1c", borderRadius: 8, padding: "8px 10px" }}>
-                          <div style={{ fontSize: 9, color: "#556677", fontFamily: "'IBM Plex Mono', monospace", letterSpacing: 1, marginBottom: 3 }}>{stat.label}</div>
-                          <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: statusColor, fontWeight: 700 }}>{stat.value}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
 
-            {/* Pipeline Architecture */}
-            <div style={{ marginTop: 20, background: "#0a1628", border: "1px solid #0f2a45", borderRadius: 16, padding: 20 }}>
-              <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontWeight: 700, fontSize: 13, color: "#c8dae8", marginBottom: 14 }}>
-                Detection Pipeline Architecture
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                {["RTSP Streams", "→", "Frame Decoder", "→", "YOLO Detect", "→", "BoT-SORT Track", "→", "Analyzers", "→", "Redis Streams", "→", "Dashboard + WhatsApp"].map((s, i) => (
-                  <span key={i} style={{
-                    fontFamily: "'IBM Plex Mono', monospace", fontSize: 10,
-                    color: s === "→" ? "#556677" : "#00C2A8",
-                    background: s === "→" ? "transparent" : "#00C2A811",
-                    padding: s === "→" ? "0" : "5px 10px",
-                    borderRadius: 6, border: s === "→" ? "none" : "1px solid #00C2A833",
-                  }}>{s}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ═══════════════════════════ ALERTS TAB ═══════════════════════════ */}
-        {activeTab === "alerts" && (
-          <div className="card">
-            <div style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: 16, fontWeight: 700, color: "#e8f4f8", marginBottom: 16 }}>
-              Recent System Alerts
-            </div>
-            {[
-              { time: "10:47:23", cam: "GUL-CAM-007", type: "Intrusion", severity: "critical", msg: "Unauthorized zone entry detected — Vault area" },
-              { time: "10:39:01", cam: "TEJ-CAM-012", type: "Camera Offline", severity: "warning", msg: "Network connection lost" },
-              { time: "10:31:55", cam: "GUL-CAM-021", type: "Crowd", severity: "info", msg: "Lobby occupancy exceeded threshold (>15 persons)" },
-              { time: "10:22:44", cam: "TEJ-CAM-003", type: "Face Match", severity: "info", msg: "Watchlist match — confidence 91.2%" },
-              { time: "10:15:10", cam: "GUL-DVR-02", type: "DVR Offline", severity: "critical", msg: "Power failure — DVR unit unresponsive" },
-              { time: "09:58:02", cam: "TEJ-CAM-019", type: "PPE", severity: "warning", msg: "Security staff missing ID badge" },
-              { time: "09:44:37", cam: "GUL-CAM-015", type: "Motion", severity: "info", msg: "After-hours motion detected — Manager room" },
-              { time: "09:30:11", cam: "TEJ-CAM-024", type: "Storage", severity: "warning", msg: "DVR-06 storage at 91% capacity" },
-            ].map((alert, i) => {
-              const color = alert.severity === "critical" ? "#ef4444" : alert.severity === "warning" ? "#f59e0b" : "#3b82f6";
-              const icon = alert.severity === "critical" ? "🚨" : alert.severity === "warning" ? "⚠️" : "ℹ️";
-              const branch = alert.cam.startsWith("GUL") ? "gulshan" : "tejgaon";
-              return (
-                <div key={i} style={{
-                  background: "#0a1628", border: `1px solid ${color}33`,
-                  borderRadius: 12, padding: "14px 18px", marginBottom: 10,
-                  display: "flex", alignItems: "flex-start", gap: 14,
-                  borderLeft: `3px solid ${color}`,
-                  animation: `slide-in .3s ease ${i * 0.06}s both`,
-                }}>
-                  <div style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>{icon}</div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                      <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700, fontSize: 12, color: "#c8dae8" }}>{alert.cam}</span>
-                      <span style={{
-                        fontSize: 9, background: `${color}22`, color,
-                        padding: "2px 8px", borderRadius: 20,
-                        fontFamily: "'IBM Plex Mono', monospace", border: `1px solid ${color}44`,
-                        textTransform: "uppercase",
-                      }}>{alert.type}</span>
-                      <span style={{ fontSize: 9, color: BRANCHES[branch].color, fontFamily: "'IBM Plex Mono', monospace" }}>
-                        {BRANCHES[branch].short}
-                      </span>
-                    </div>
-                    <div style={{ fontSize: 12, color: "#8899aa" }}>{alert.msg}</div>
-                  </div>
-                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#556677", flexShrink: 0 }}>{alert.time}</div>
-                </div>
-              );
-            })}
-          </div>
-        )}
       </div>
 
       {/* ── Footer ── */}
